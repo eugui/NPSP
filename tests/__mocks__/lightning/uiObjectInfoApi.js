@@ -1,8 +1,7 @@
-/*
- * Copyright (c) 2018, salesforce.com, inc.
- * All rights reserved.
- * SPDX-License-Identifier: MIT
- * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
+/**
+ * For the original lightning-combobox mock that comes with
+ * @salesforce/sfdx-lwc-jest, see:
+ * https://github.com/salesforce/sfdx-lwc-jest/blob/master/src/lightning-stubs/uiObjectInfoApi/uiObjectInfoApi.js
  */
 import { createLdsTestWireAdapter } from '@salesforce/wire-service-jest-util';
 

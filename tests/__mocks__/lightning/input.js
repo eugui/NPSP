@@ -1,10 +1,7 @@
-// see https://github.com/salesforce/sfdx-lwc-jest/blob/master/src/lightning-stubs/input/input.js
-
-/*
- * Copyright (c) 2018, salesforce.com, inc.
- * All rights reserved.
- * SPDX-License-Identifier: MIT
- * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
+/**
+ * For the original lightning-input mock that comes with
+ * @salesforce/sfdx-lwc-jest, see:
+ * https://github.com/salesforce/sfdx-lwc-jest/blob/master/src/lightning-stubs/input/input.js
  */
 import { LightningElement, api } from 'lwc';
 
