@@ -10,18 +10,10 @@ import {
     LABEL_NEW_LINE,
     ACCOUNT_HOLDER_TYPES, ACCOUNT_HOLDER_BANK_TYPES
 } from 'c/geConstants';
+import Schema from './helpers/schema';
 
 import getOrgDomainInfo from '@salesforce/apex/UTIL_AuraEnabledCommon.getOrgDomainInfo';
 import getPaymentTransactionStatusValues from '@salesforce/apex/GE_PaymentServices.getPaymentTransactionStatusValues';
-
-import DATA_IMPORT_PAYMENT_AUTHORIZATION_TOKEN_FIELD from '@salesforce/schema/DataImport__c.Payment_Authorization_Token__c';
-import DATA_IMPORT_PAYMENT_STATUS_FIELD from '@salesforce/schema/DataImport__c.Payment_Status__c';
-import DATA_IMPORT_PAYMENT_METHOD from '@salesforce/schema/DataImport__c.Payment_Method__c';
-import DATA_IMPORT_CONTACT_FIRSTNAME from '@salesforce/schema/DataImport__c.Contact1_Firstname__c';
-import DATA_IMPORT_CONTACT_LASTNAME from '@salesforce/schema/DataImport__c.Contact1_Lastname__c';
-import DATA_IMPORT_DONATION_DONOR from '@salesforce/schema/DataImport__c.Donation_Donor__c';
-import DATA_IMPORT_ACCOUNT_NAME from '@salesforce/schema/DataImport__c.Account1_Name__c';
-import DATA_IMPORT_PARENT_BATCH_LOOKUP from '@salesforce/schema/DataImport__c.NPSP_Data_Import_Batch__c';
 
 const TOKENIZE_CREDIT_CARD_EVENT_ACTION = 'createToken';
 const TOKENIZE_ACH_EVENT_ACTION = 'createAchToken';
@@ -44,7 +36,7 @@ export default class geFormWidgetTokenizeCard extends LightningElement {
     _hasPaymentMethodInTemplate = false;
 
     isInBatchGiftEntry() {
-        return this.widgetDataFromState[apiNameFor(DATA_IMPORT_PARENT_BATCH_LOOKUP)] !== undefined;
+        return this.widgetDataFromState[Schema.DataImport__c.NPSP_Data_Import_Batch__c] !== undefined;
     }
 
     iframe() {
@@ -68,10 +60,10 @@ export default class geFormWidgetTokenizeCard extends LightningElement {
 
     handleWidgetDataChange() {
         this._hasPaymentMethodInTemplate =
-            this.sourceFieldsUsedInTemplate.includes(apiNameFor(DATA_IMPORT_PAYMENT_METHOD));
+            this.sourceFieldsUsedInTemplate.includes(Schema.DataImport__c.Payment_Method__c);
 
         if (this._hasPaymentMethodInTemplate) {
-            this._currentPaymentMethod = this.widgetDataFromState[apiNameFor(DATA_IMPORT_PAYMENT_METHOD)];
+            this._currentPaymentMethod = this.widgetDataFromState[Schema.DataImport__c.Payment_Method__c];
 
             if (this.hasValidPaymentMethod(this._currentPaymentMethod)) {
                 if (this.isMounted) {
@@ -96,10 +88,10 @@ export default class geFormWidgetTokenizeCard extends LightningElement {
     }
 
     isPaymentCharged() {
-        return (this.widgetDataFromState[apiNameFor(DATA_IMPORT_PAYMENT_STATUS_FIELD)] ===
+        return (this.widgetDataFromState[Schema.DataImport__c.Payment_Status__c] ===
             this.PAYMENT_TRANSACTION_STATUS_ENUM.CAPTURED ||
 
-            this.widgetDataFromState[apiNameFor(DATA_IMPORT_PAYMENT_STATUS_FIELD)] ===
+            this.widgetDataFromState[Schema.DataImport__c.Payment_Status__c] ===
             this.PAYMENT_TRANSACTION_STATUS_ENUM.SUBMITTED);
     }
 
@@ -305,27 +297,26 @@ export default class geFormWidgetTokenizeCard extends LightningElement {
 
     populateAchParametersForBusiness(achTokenizeParameters) {
         achTokenizeParameters.accountHolder.businessName =
-            this.widgetDataFromState[apiNameFor(DATA_IMPORT_CONTACT_LASTNAME)];
+            this.widgetDataFromState[Schema.DataImport__c.Contact1_Lastname__c];
         achTokenizeParameters.accountHolder.accountName =
-            this.widgetDataFromState[apiNameFor(DATA_IMPORT_ACCOUNT_NAME)];
+            this.widgetDataFromState[Schema.DataImport__c.Account1_Name__c];
         achTokenizeParameters.nameOnAccount =
-            this.widgetDataFromState[apiNameFor(DATA_IMPORT_ACCOUNT_NAME)];
+            this.widgetDataFromState[Schema.DataImport__c.Account1_Name__c];
         return achTokenizeParameters;
     }
 
     populateAchParametersForIndividual (achTokenizeParameters) {
         achTokenizeParameters.accountHolder.firstName =
-            this.widgetDataFromState[apiNameFor(DATA_IMPORT_CONTACT_FIRSTNAME)];
+            this.widgetDataFromState[Schema.DataImport__c.Contact1_Firstname__c];
         achTokenizeParameters.accountHolder.lastName =
-            this.widgetDataFromState[apiNameFor(DATA_IMPORT_CONTACT_LASTNAME)];
+            this.widgetDataFromState[Schema.DataImport__c.Contact1_Lastname__c];
         achTokenizeParameters.nameOnAccount =
-            `${this.widgetDataFromState[apiNameFor(DATA_IMPORT_CONTACT_FIRSTNAME)]} ${this.widgetDataFromState[apiNameFor(DATA_IMPORT_CONTACT_LASTNAME)]}`;
+            `${this.widgetDataFromState[Schema.DataImport__c.Contact1_Firstname__c]} ${this.widgetDataFromState[Schema.DataImport__c.Contact1_Lastname__c]}`;
         return achTokenizeParameters
     }
 
     accountHolderType() {
-        return this.widgetDataFromState[
-            apiNameFor(DATA_IMPORT_DONATION_DONOR)] === CONTACT_DONOR_TYPE
+        return this.widgetDataFromState[Schema.DataImport__c.Donation_Donor__c] === CONTACT_DONOR_TYPE
             ? ACCOUNT_HOLDER_TYPES.INDIVIDUAL
             : ACCOUNT_HOLDER_TYPES.BUSINESS;
     }
@@ -342,8 +333,8 @@ export default class geFormWidgetTokenizeCard extends LightningElement {
      */
     resolveToken = (token) => {
         return {
-            [DATA_IMPORT_PAYMENT_AUTHORIZATION_TOKEN_FIELD.fieldApiName]: token,
-            [DATA_IMPORT_PAYMENT_STATUS_FIELD.fieldApiName]: this.PAYMENT_TRANSACTION_STATUS_ENUM.PENDING
+            [Schema.DataImport__c.Payment_Authorization_Token__c]: token,
+            [Schema.DataImport__c.Payment_Status__c]: this.PAYMENT_TRANSACTION_STATUS_ENUM.PENDING
         }
     }
 
